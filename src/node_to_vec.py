@@ -22,7 +22,6 @@ class Graph(object):
         return edge_set[Id][2]
 
 def construct_tensorflow_graph():
-    #to be continued
-
+    
 # x_node is a node index vector of the center node neighbours
 # x_edge is a edge index dictionary of the center node neighbors, the key is edge id and the value is a feature vector
