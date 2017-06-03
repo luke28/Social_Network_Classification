@@ -63,6 +63,7 @@ class NodeToVec(object):
 			self.embed_wighted = tf.multiply(
 				self.edge_strength_tile, self.embed)
 			self.embed_sum = tf.reduce_sum(self.embed_wighted, 1)
+			#self.embed_sum = tf.reshape(self.embed_wighted, [self.batch_size, -1])
 
 			self.y = tf.nn.softmax(tf.matmul(self.embed_sum, 
 				self.w_final) + self.b_final)
@@ -82,8 +83,8 @@ class NodeToVec(object):
 					self.train_step.run({self.x_nodes: 
 						batch_nodes, self.x_edges: batch_edges, 
 						self.y_: batch_y})
-					#if (i % 100 == 0):
-					#	print(sess.run(self.embeddings))
+					if (i % 1000 == 0):
+						print(sess.run(self.embeddings))
 				return sess.run(self.embeddings)
 
 

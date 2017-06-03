@@ -3,6 +3,7 @@ import numpy as np
 import bisect as bs
 import random
 import traceback
+import matplotlib.pyplot as plt
 
 class Graph(object):
 	def __init__(self, n):
@@ -60,6 +61,21 @@ class DataHandler(object):
 		batch_y_ = [y_[i] for i in selected_idx]
 		return batch_nodes_x, batch_edges_x, batch_y_
 
+	def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
+		assert low_dim_embs.shape[0] >= len(labels), 'More labels than embeddings'
+		plt.figure(figsize=(18, 18))  # in inches
+		for i, label in enumerate(labels):
+			x, y = low_dim_embs[i, :]
+			plt.scatter(x, y)
+			plt.annotate(label,
+				xy=(x, y),
+				xytext=(5, 2),
+				textcoords='offset points',
+				ha='right',
+				va='bottom')
+
+		plt.show()
+		plt.savefig(filename)
 
 	@staticmethod
 	def sampling_all(g, sample_size = 1000, num_neighbor = 10):
@@ -75,9 +91,9 @@ class DataHandler(object):
 				reshape(len(strength), 1))
 			nodes_x.append(nodes)
 
-			print nodes_x[-1]
-			print edges_x[-1]
-			print y_[-1]
+			#print nodes_x[-1]
+			#print edges_x[-1]
+			#print y_[-1]
 		return nodes_x, edges_x, y_
 
 

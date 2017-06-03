@@ -1,6 +1,7 @@
 import networkx as nx
 from data_handler import DataHandler as dh
 from node_to_vec import NodeToVec
+from sklearn.manifold import TSNE
 
 
 
@@ -25,24 +26,24 @@ def main():
 	def get_batch(batch_size):
 		return dh.get_batch(nodes_x, edges_x, y_, batch_size)
 	g = nx.Graph()
-	g.add_nodes_from(range(6))
-	g.add_edges_from([(0, 1), (1, 2), (2, 0), (3, 4), (3, 5)], value = 1000)
-	g.add_edges_from([(2, 4), (1, 3), (4, 5)], value = 1)
+	g.add_nodes_from(range(5))
+	g.add_edges_from([(0, 1), (1, 2), (2, 0), (3, 4)], value = 1000)
+	g.add_edges_from([(2, 4), (1, 3)], value = 1)
 	g = g.to_directed()
 	g = dh.value_to_prob(g)
 	
 	nodes_x, edges_x, y_ = dh.sampling_all(g, 10, 1)
 
 	param = {}
-	param["embedding_size"] = 5
+	param["embedding_size"] = 10
 	param["feature_size"] = 1
 	param["sampling_size"] = 1
-	param["batch_size"] = 10
+	param["batch_size"] = 5
 	param["num_node"] = g.number_of_nodes()
 	param["num_edge"] = g.number_of_edges()
-	param["learnRate"] = 0.01
+	param["learnRate"] = 0.001
 	nt = NodeToVec(param)
-	embeddings = nt.Train(get_batch, 2001)
+	embeddings = nt.Train(get_batch, 10001)
 
 	node_list = []
 	for embed in embeddings:
@@ -59,6 +60,11 @@ def main():
 		for it in item:
 			print(str(it[0]) + "," + str(it[1]))
 		print("")
+		
+	labels = range(5)
+	tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
+	low_dim_embs = tsne.fit_transform(embeddings)
+	dh.plot_with_labels(low_dim_embs, labels)
 
 
 
